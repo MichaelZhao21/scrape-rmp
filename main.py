@@ -126,65 +126,80 @@ def main():
     req_data = {
         "query": """query TeacherSearchPaginationQuery( $count: Int!  $cursor: String $query: TeacherSearchQuery!) { search: newSearch { ...TeacherSearchPagination_search_1jWD3d } }
             fragment TeacherSearchPagination_search_1jWD3d on newSearch {
-            teachers(query: $query, first: $count, after: $cursor) {
-                didFallback
-                edges {
-                cursor
-                node {
-                    ...TeacherCard_teacher
-                    id
-                    __typename
+                teachers(query: $query, first: $count, after: $cursor) {
+                    didFallback
+                    edges {
+                        cursor
+                        node {
+                            ...TeacherCard_teacher
+                            id
+                            __typename
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                    resultCount
+                    filters {
+                        field
+                        options {
+                            value
+                            id
+                        }
+                    }
                 }
-                }
-                pageInfo {
-                hasNextPage
-                endCursor
-                }
-                resultCount
-                filters {
-                field
-                options {
-                    value
-                    id
-                }
-                }
-            }
             }
 
             fragment TeacherCard_teacher on Teacher {
-            id
-            legacyId
-            avgRating
-            numRatings
-            courseCodes {    courseName    courseCount  }
-            ...CardFeedback_teacher
-            ...CardSchool_teacher
-            ...CardName_teacher
-            ...TeacherBookmark_teacher
+                id
+                legacyId
+                avgRating
+                numRatings
+                courseCodes {
+                    courseName
+                    courseCount
+                }
+                ...CardFeedback_teacher
+                ...CardSchool_teacher
+                ...CardName_teacher
+                ...TeacherBookmark_teacher
+                ...TeacherTags_teacher
             }
 
             fragment CardFeedback_teacher on Teacher {
-            wouldTakeAgainPercent
-            avgDifficulty
+                wouldTakeAgainPercent
+                avgDifficulty
             }
 
             fragment CardSchool_teacher on Teacher {
-            department
-            school {
-                name
-                id
-            }
+                department
+                school {
+                    name
+                    id
+                }
             }
 
             fragment CardName_teacher on Teacher {
-            firstName
-            lastName
+                firstName
+                lastName
             }
 
             fragment TeacherBookmark_teacher on Teacher {
-            id
-            isSaved
-        }""",
+                id
+                isSaved
+            }
+
+            fragment TeacherTags_teacher on Teacher {
+                lastName 
+                teacherRatingTags {
+                    legacyId
+                    tagCount
+                    tagName
+                    id  
+                }
+            }
+        """,
         "variables": {
             "count": 1000,
             "cursor": "",
@@ -217,6 +232,7 @@ def main():
                 'wouldTakeAgainPercent': dn['wouldTakeAgainPercent'],
                 'id': dn['id'],
                 'legacyId': dn['legacyId'],
+                'teacherRatingTags': dn['teacherRatingTags'],
                 'courseCodes': dn['courseCodes']
             })
         
